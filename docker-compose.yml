@@ -1,0 +1,30 @@
+version: "3"
+services:
+  php:
+    build: ./docker/php
+    volumes:
+      - ./backend:/work
+
+  nginx:
+    image: nginx:1.18-alpine
+    ports:
+      - 10080:80
+    volumes:
+      - ./backend:/work
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    working_dir: /work
+
+  mysql:
+    image: mysql:8.0
+    volumes:
+      - db-store:/var/lib/musql
+      - ./docker/mysql/my.cnf:/etc/mysql/conf.d/my.cnf
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=docker-laravel-handson
+      - MYSQL_USER=docker
+      - MYSQL_PASSWORD=docker
+    ports:
+      - 4306:3306
+volumes:
+  db-store:
